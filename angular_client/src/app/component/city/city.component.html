@@ -1,0 +1,19 @@
+<form [formGroup]="cityForm" (ngSubmit)="addCity()">
+  <label for="city">City:</label>
+  <input type="text" formControlName="city">
+  <button type="submit">Add</button>
+  <br><br>
+</form>
+
+<div *ngIf="cities$ | async; else loading">
+  <h3>Saved Cities</h3>
+  <p *ngFor="let city of cities$ | async">
+    <a [routerLink]="'/weather'" [queryParams]="{ city: city }">
+      {{ city | titlecase }}
+    </a>
+  </p>
+</div>
+
+<ng-template #loading>
+  Retrieving cities...
+</ng-template>

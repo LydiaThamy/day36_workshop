@@ -1,0 +1,18 @@
+<div *ngIf="weather$ |async as weather">
+    <h1>Weather in {{ city | titlecase }}</h1>
+    <table>
+        <tr>
+            <td>Description:</td>
+            <td>{{ weather.description }}</td>
+        </tr>
+        <tr>
+            <td>Temperature:</td>
+            <td>{{ weather.temperature }}</td>
+        </tr>
+        <tr>
+            <td>Visibility:</td>
+            <td>{{ weather.visibility }}</td>
+        </tr>
+    </table>
+    <button (click)="backHome()">Back</button>
+</div>
