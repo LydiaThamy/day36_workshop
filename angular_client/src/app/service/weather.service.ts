@@ -13,11 +13,11 @@ export class WeatherService {
   // private url: string = "https://day36workshopapi-production.up.railway.app/api/"
 
   getCountryAPI(): Observable<string[]> {
-    return this.http.get<string[]>("/cities")
+    return this.http.get<string[]>("/api/cities")
   }
 
   addcountryAPI(city: string): Observable<any> {
-    return this.http.post<any>("/cities/add", { city: city }, { observe: 'response' }) // httpOptions
+    return this.http.post<any>("/api/cities/add", { city: city }, { observe: 'response' }) // httpOptions
 
     // let httpOptions = {
     //     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
@@ -28,6 +28,6 @@ export class WeatherService {
     let query: HttpParams = new HttpParams()
       .set("city", city)
 
-    return this.http.get<Weather>("/weather", { params: query })
+    return this.http.get<Weather>("/api/weather", { params: query })
   }
 }
