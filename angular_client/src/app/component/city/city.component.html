@@ -5,9 +5,13 @@
   <br><br>
 </form>
 
-<div *ngIf="cities$ | async; else loading">
-  <h3>Saved Cities</h3>
-  <p *ngFor="let city of cities$ | async">
+<div *ngIf="message">
+  {{ message }}
+</div>
+
+<h3>Saved Cities</h3>
+<div *ngIf="cities.length > 0; else loading">
+  <p *ngFor="let city of cities">
     <a [routerLink]="'/weather'" [queryParams]="{ city: city }">
       {{ city | titlecase }}
     </a>
@@ -15,5 +19,5 @@
 </div>
 
 <ng-template #loading>
-  Retrieving cities...
+  <img src="/assets/loading.gif" alt="retrieving cities..." width="100px">
 </ng-template>

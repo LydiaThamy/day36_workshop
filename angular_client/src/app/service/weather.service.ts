@@ -1,7 +1,7 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Weather } from '../model/Weather';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +14,14 @@ export class WeatherService {
 
   getCountryAPI(): Observable<string[]> {
     return this.http.get<string[]>("/cities")
+  }
+
+  addcountryAPI(city: string): Observable<any> {
+    return this.http.post<any>("/cities/add", { city: city }, { observe: 'response' }) // httpOptions
+
+    // let httpOptions = {
+    //     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+    //     observe: 'response',};
   }
 
   getWeatherAPI(city: string): Observable<Weather> {

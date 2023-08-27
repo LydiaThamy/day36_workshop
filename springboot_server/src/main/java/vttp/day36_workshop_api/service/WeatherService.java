@@ -51,4 +51,8 @@ public class WeatherService {
         return Optional.of(json);
         // return Optional.of(opt.get());
     }
+
+    public Integer addCity(String city) {
+        return cityRepo.addCity(city);
+    }
 }

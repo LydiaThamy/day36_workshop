@@ -1,4 +1,4 @@
-<div *ngIf="weather$ |async as weather">
+<div *ngIf="weather$ |async as weather; else loading">
     <h1>Weather in {{ city | titlecase }}</h1>
     <table>
         <tr>
@@ -16,3 +16,7 @@
     </table>
     <button (click)="backHome()">Back</button>
 </div>
+
+<ng-template #loading>
+    <img src="/assets/loading.gif" alt="retrieving cities..." width="100px">
+  </ng-template>

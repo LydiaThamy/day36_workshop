@@ -13,9 +13,14 @@ public class CitiesRepo {
     private JdbcTemplate jdbcTemplate;
 
     public final static String GET_CITIES_SQL = "select distinct city from cities";
+    public final static String ADD_CITY_SQL = "insert into cities values (null, ?)";
 
     public List<String> getCities() {
         return jdbcTemplate.queryForList(GET_CITIES_SQL, String.class);
+    }
+
+    public Integer addCity(String city) {
+        return jdbcTemplate.update(ADD_CITY_SQL, city);
     }
 
 }

@@ -1,6 +1,6 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { WeatherService } from 'src/app/service/weather.service';
 
 @Component({
@@ -8,23 +8,31 @@ import { WeatherService } from 'src/app/service/weather.service';
   templateUrl: './city.component.html',
   styleUrls: ['./city.component.css']
 })
-export class CityComponent implements OnInit {
+export class CityComponent implements OnInit, OnDestroy {
 
-  // private service = inject(WeatherService)
-  // private fb = inject(FormBuilder)
-
-  constructor(private service: WeatherService, private fb: FormBuilder) {}
+  constructor(private service: WeatherService, private fb: FormBuilder) { }
 
   cityForm: FormGroup
-  cities$!: Observable<string[]>
+
+  sub$!: Subscription
+  cities: string[] = []
+
+  message: string = ''
 
   ngOnInit(): void {
     this.createForm()
     this.getCities()
   }
 
-  getCities() {
-    this.cities$ = this.service.getCountryAPI()
+  getCities(): void {
+    this.sub$ = this.service.getCountryAPI()
+      .subscribe(
+        data => {
+          data.forEach(result => {
+            this.cities.push(result)
+          })
+          this.cities.sort((a, b) => a.localeCompare(b))
+        })
   }
 
   createForm(): void {
@@ -33,9 +41,40 @@ export class CityComponent implements OnInit {
     })
   }
 
-  addCity() {
-    const city = this.cityForm.get('city')
+  addCity(): void {
+    let city: string = this.cityForm.value['city']
 
+    // check if city is already on the list
+    if (this.cities.includes(city)) {
+      this.message = city + " already added!"
+
+      // add city to SQL
+    } else {
+
+      let statusCode: number
+
+      this.service.addcountryAPI(city.toLowerCase())
+        .subscribe({
+          next: response => { statusCode = response.status },
+
+          // check if city is added
+          complete: () => {
+            if (statusCode != 200) {
+              this.message = city + " is not a city!"
+      
+            } else {
+              this.message = city + " saved!"
+              
+              // refresh cities list
+              this.cities = []
+              this.getCities()
+            }
+          }
+        })
+    }
   }
 
+  ngOnDestroy(): void {
+    this.sub$.unsubscribe()
+  }
 }

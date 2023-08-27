@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -16,7 +17,7 @@ public class WeatherRepo {
     @Value("${open.weather.api.key}")
     private String apiKey;
 
-    public Optional<Weather> getWeather(String city) throws IOException {
+    public Optional<Weather> getWeather(String city) {
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -26,12 +27,15 @@ public class WeatherRepo {
                 .queryParam("appid", apiKey)
                 .toUriString();
 
-        String resp = restTemplate.getForEntity(url, String.class)
-                .getBody();
+        try {
+            ResponseEntity<String> resp = restTemplate.getForEntity(url, String.class);
+            Weather weather = Weather.create(resp.getBody());
+            return Optional.of(weather);
 
-        Weather weather = Weather.create(resp);
-
-        return Optional.ofNullable(weather);
+        } catch (IOException e) {
+            // if (resp.getStatusCode() != HttpStatusCode.valueOf(200))
+                return Optional.empty();
+        }
     }
 
 }
